@@ -1,8 +1,10 @@
 // ./src/App.tsx
-
+import './App.css'
 import React, { useState } from 'react';
 import Path from 'path';
 import uploadFileToBlob, { isStorageConfigured } from './azure-storage-blob';
+import VideoEmbed from './VideoEmbed';
+
 
 const storageConfigured = isStorageConfigured();
 
@@ -38,43 +40,45 @@ const App = (): JSX.Element => {
     setInputKey(Math.random().toString(36));
   };
 
+
   // display form
   const DisplayForm = () => (
-    <div>
+    <div className = "Upload">
       <input type="file" onChange={onFileChange} key={inputKey || ''} />
-      <button type="submit" onClick={onFileUpload}>
-        Upload!
+      <button className = "Button" type="submit" onClick={onFileUpload}>
+        Upload
           </button>
     </div>
   )
 
   // display file name and image
-  const DisplayImagesFromContainer = () => (
-    <div>
-      <h2>Container items</h2>
-      <ul>
-        {blobList.map((item) => {
-          return (
-            <li key={item}>
-              <div>
-                {Path.basename(item)}
-                <br />
-                <img src={item} alt={item} height="200" />
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
+  // const DisplayVideosFromContainer = () => (
+  //   <div>
+  //     <h2>Container items</h2>
+  //     <ul>
+  //       {blobList.map((item) => {
+  //         return (
+  //           <li key={item}>
+  //             <div>
+  //               {Path.basename(item)}
+  //               <br />
+  //               <video src={item} controls height="200" width = "300" />
+  //             </div>
+  //           </li>
+  //         );
+  //       })}
+  //     </ul>
+  //   </div>
+  // );
 
   return (
     <div>
-      <h1>Upload file to Azure Blob Storage</h1>
+      <h1 className = "heading">Upload Your Session</h1>
       {storageConfigured && !uploading && DisplayForm()}
       {storageConfigured && uploading && <div>Uploading</div>}
-      <hr />
-      {storageConfigured && blobList.length > 0 && DisplayImagesFromContainer()}
+      {storageConfigured && blobList.length > 0 && <div>
+        <VideoEmbed blobItem = {blobList[blobList.length - 1]} />
+        </div>}
       {!storageConfigured && <div>Storage is not configured.</div>}
     </div>
   );
